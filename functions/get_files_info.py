@@ -12,6 +12,26 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
         if not os.path.isdir(target_dir):
             return f'Error: "{directory}" is not a directory'
 
-        return f'Success: "{directory}" is within the working directory'
+        final_string = ""
+
+        try:
+            dir_list = os.listdir(target_dir)
+        except Exception as e:
+            return f'Error: directory list could not be retrieved due to error {e}'
+
+        for item in dir_list:
+            full_path = target_dir + "/" + item
+            try:
+                file_size = os.path.getsize(full_path)
+            except Exception as e:
+                return f'Error: file size could not be retrieved due to error {e}'
+            try:
+                is_dir = os.path.isdir(full_path)
+            except Exception as e:
+                return f'Error: directory status could not be found due to error {e}'
+            item_string = f"- {item}: file_size={file_size}, is_dir={is_dir}\n"
+            final_string += item_string
+
+        return final_string
     except Exception as e:
         return f'Error: encountered unexpected error {e}'
